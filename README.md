@@ -74,4 +74,8 @@ Once we have the base value, we initialize the encoder with this value.
 
 This will set ```base``` as position 0 as opposed to whatever the current analog reading.
 
+Read the position property of the object to get the position.
 
+```
+  Serial.println(encoder.position);
+```
