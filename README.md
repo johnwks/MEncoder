@@ -17,7 +17,7 @@ Include MEncoder.h at the top of your Arduino sketch.
 Create object instances for each encoder.
 
 ```
-MEncoder encoder1(PIN_ENCODER1, 12, 1023);
+MEncoder encoder(PIN_ENCODER1, 12, 1023);
 ```
 
 PIN_ENCODER is the Arduino pin which is connected to the analog output of the AS5600 PCB.
@@ -31,7 +31,7 @@ Initialize the encoder in ```setup()```.
 ```
 void setup()
 {
-    encoder1.init();
+    encoder.init();
 }
 ```
 
@@ -63,7 +63,10 @@ In this example, a clockwise rotation will trigger BUTTON_NUM and a counter-cloc
 
 ## TODO
 
-In order to operate as a rotary switch, I will need to add additional code to support that. I currently have the code outside of the library and will need to migrate them into the library.
+In order to operate as a rotary switch, I will need to add additional code to support that. The rotary switch code basically keeps track of which position it is in and when there is a rotation, updates the position.
 
-The rotary switch code basically keeps track of which position it is in and when there is a rotation, updates the position.
+```
+  Serial.println(encoder.position);
+```
 
+The ```position``` property is where the current position is stored. In a way, this could be used to trigger events when there is a change in position. The problem with this is that position 0 is only determined when the ```init()``` method is called which is usually at the beginning of ```setup()```. I would like to include code to ensure that position 0 can be custom set by the user.
