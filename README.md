@@ -35,7 +35,7 @@ void setup()
 }
 ```
 
-This will have the effect of setting the current encoder position as position 0.
+This will have the effect of setting the current encoder position as position 0. This works well as an incremental rotary encoder as all it needs to do is to detect clockwise or counter-clockwise rotation. See below on how to make it function like a rotary switch.
 
 In the ```loop()``` function, poll the encoder to determine if there has been a clockwise or counter-clockwise rotation.
 
@@ -60,13 +60,18 @@ void loop()
 
 In this example, a clockwise rotation will trigger BUTTON_NUM and a counter-clockwise rotation will trigger BUTTON_NUM + 1.
 
-
-## TODO
-
-In order to operate as a rotary switch, I will need to add additional code to support that. The rotary switch code basically keeps track of which position it is in and when there is a rotation, updates the position.
+In order to make the encoder function like a rotary switch, we need to find out the analog value at the intended position 0.
 
 ```
-  Serial.println(encoder.position);
+  base = encoder.readVal();
 ```
 
-The ```position``` property is where the current position is stored. In a way, this could be used to trigger events when there is a change in position. The problem with this is that position 0 is only determined when the ```init()``` method is called which is usually at the beginning of ```setup()```. I would like to include code to ensure that position 0 can be custom set by the user.
+Once we have the base value, we initialize the encoder with this value.
+
+```
+  encoder.init(base);
+```
+
+This will set ```base``` as position 0 as opposed to whatever the current analog reading.
+
+

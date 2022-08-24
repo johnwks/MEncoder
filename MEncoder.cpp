@@ -2,7 +2,7 @@
 #include "MEncoder.h"
 
 
-MEncoder::MEncoder(uint8_t _pin, uint8_t _num, uint16_t _maxval) : pin { _pin }, numpos { _num }, maxval { _maxval}
+MEncoder::MEncoder(uint8_t _pin, uint8_t _num, uint16_t _maxval) : pin { _pin }, numpos { _num }, maxval { _maxval }
 {
 
 }
@@ -15,6 +15,16 @@ void MEncoder::init()
     for(int i = 0; i < 100 ; i++) {
         baseValue = (baseValue + analogRead(pin)) / 2;
     }
+    state = ME_NONE;
+}
+
+
+void MEncoder::init(uint16_t _base)
+{
+    baseValue = _base;
+    pinMode(pin, INPUT_PULLUP);
+    value = analogRead(pin);
+    position = findPosition(value);
     state = ME_NONE;
 }
 
@@ -92,4 +102,15 @@ uint8_t MEncoder::findPosition(uint16_t _val)
 void MEncoder::resetState()
 {
     state = ME_NONE;
+}
+
+
+uint16_t MEncoder::readVal()
+{
+    value = analogRead(pin);
+    for(int i = 0; i < 100 ; i++) {
+        value = (value + analogRead(pin)) / 2;
+    }
+
+    return value;
 }

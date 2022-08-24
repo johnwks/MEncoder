@@ -16,11 +16,13 @@ class MEncoder
     public:
         MEncoder(uint8_t, uint8_t, uint16_t);
         void init();
+        void init(uint16_t);
         void process();
         void resetState();
         bool IsCW(int, int);
         bool IsBetween(int, int, int);
         uint8_t findPosition(uint16_t);
+        uint16_t readVal();
 
         uint8_t pin;
         uint8_t numpos;
