@@ -35,7 +35,7 @@ void MEncoder::process()
 
     value = analogRead(pin);
     tmp = findPosition(value);
-    if (tmp == INVALID_POS) {
+    if (tmp == ME_INVALID_POS) {
         return;
     }
     position = tmp;
@@ -86,7 +86,7 @@ uint8_t MEncoder::findPosition(uint16_t _val)
 
     while ((!found) && (curpos < numpos)) {
         curbase = baseValue + (curpos * (maxval / numpos));
-        tmp = (maxval / numpos) * MULTIPLIER;
+        tmp = (maxval / numpos) * ME_MULTIPLIER;
         found = IsBetween(curbase - tmp, curbase + tmp, _val);
         curpos++;
     }
@@ -95,7 +95,7 @@ uint8_t MEncoder::findPosition(uint16_t _val)
         return --curpos;
     }
 
-    return INVALID_POS;
+    return ME_INVALID_POS;
 }
 
 

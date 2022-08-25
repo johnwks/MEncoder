@@ -7,8 +7,8 @@
 #define ME_CW       0x1
 #define ME_CCW      0x2
 
-#define MULTIPLIER  0.4
-#define INVALID_POS 255
+#define ME_MULTIPLIER  0.4
+#define ME_INVALID_POS 255
 
 
 class MEncoder

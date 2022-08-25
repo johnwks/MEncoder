@@ -1,6 +1,6 @@
 # MEncoder
 
-Arduino library to work with the AS5600 magnetic hall sensor PCB to function as a rotary encoder or switch.
+Arduino library to work with the AS5600 magnetic hall sensor PCB to function as a rotary encoder or rotary switch.
 
 ## Installation
 
@@ -14,13 +14,13 @@ Include MEncoder.h at the top of your Arduino sketch.
 #include "MEncoder.h"
 ```
 
-Create object instances for each encoder.
+Create an object instance for each encoder.
 
 ```
-MEncoder encoder(PIN_ENCODER1, 12, 1023);
+MEncoder encoder(PIN_ENCODER, 12, 1023);
 ```
 
-PIN_ENCODER is the Arduino pin which is connected to the analog output of the AS5600 PCB.
+```PIN_ENCODER``` is the Arduino pin which is connected to the analog output of the AS5600 PCB.
 
 The value 12 is for the number of positions the encoder supports. The included STEP files are for a 12 position encoder.
 
@@ -42,7 +42,8 @@ In the ```loop()``` function, poll the encoder to determine if there has been a 
 ```
 void loop()
 {
-  ..
+  .
+  .
   encoder.process();
   Joystick.setButton(BUTTON_NUM, 0);
   Joystick.setButton(BUTTON_NUM + 1, 0);
@@ -53,7 +54,7 @@ void loop()
     Joystick.setButton(BUTTON_NUM + 1, 1);
   }
   encoder.resetState();
-  ..
+  .
 
 }
 ```
@@ -72,10 +73,91 @@ Once we have the base value, we initialize the encoder with this value.
   encoder.init(base);
 ```
 
-This will set ```base``` as position 0 as opposed to whatever the current analog reading.
+This will set ```base``` as position 0 as opposed to whatever the current analog reading is.
 
 Read the position property of the object to get the position.
 
 ```
-  Serial.println(encoder.position);
+void loop()
+{
+  uint8_t curr_pos;
+  .
+  .
+  encoder.process();
+  for (int i = 0; i < encoder.numpos ; i++) {
+    Joystick.setButton(BUTTON_NUM + i, 0);
+  }
+  if (encoder.position != curr_pos) {
+    curr_pos = encoder.position;
+    Joystick.setButton(BUTTON_NUM + encoder.position, 1);
+  }
+  .
+  .
+}
+
+```
+
+In the example above, if a change in position is detected within the ```loop()``` function, it will trigger ```BUTTON_NUM+position``` to be pressed. Button states should be cleared everytime right after ```encoder.process()``` to ensure the button does not stay pressed too long (i.e. PULSE). Depending on how you wish to implement this, the button state can be set to NOT clear in order to have an always on state for that position (i.e. CONSTANT). Below is an example implementation using the PULSE method.
+
+```
+void loop()
+{
+  uint8_t curr_pos;
+  .
+  .
+  encoder.process();
+  if (encoder.position != curr_pos) {
+    curr_pos = encoder.position;
+    for (int i = 0; i < encoder.numpos ; i++) {
+      Joystick.setButton(BUTTON_NUM + i, 0);
+    }
+    Joystick.setButton(BUTTON_NUM + encoder.position, 1);
+  }
+  .
+  .
+}
+
+```
+
+You could have a variable in your code to modify the behavior of the encoder to either one of the modes and act on it as in the example below.
+
+```
+void loop()
+.
+.
+  uint8_t curr_pos;
+  uint8_t mode = 0; // 0 - encoder, 1 - pulse, 2 - constant
+  .
+  .
+  encoder.process();
+  if (mode == 0) {
+    Joystick.setButton(BUTTON_NUM, 0);
+    Joystick.setButton(BUTTON_NUM + 1, 0);
+    if (encoder.state == ME_CW) {
+      Joystick.setButton(BUTTON_NUM, 1);
+    }
+    if (encoder.state == ME_CCW) {
+      Joystick.setButton(BUTTON_NUM + 1, 1);
+    }
+    encoder.resetState();
+  }
+  if (mode == 1) {
+    for (int i = 0; i < encoder.numpos ; i++) {
+      Joystick.setButton(BUTTON_NUM + i, 0);
+    }
+    if (encoder.position != curr_pos) {
+      curr_pos = encoder.position;
+      Joystick.setButton(BUTTON_NUM + encoder.position, 1);
+    }
+  }
+  if (mode == 2) {
+    if (encoder.position != curr_pos) {
+      curr_pos = encoder.position;
+      for (int i = 0; i < encoder.numpos ; i++) {
+        Joystick.setButton(BUTTON_NUM + i, 0);
+      }
+      Joystick.setButton(BUTTON_NUM + encoder.position, 1);
+    }
+  }
+
 ```
