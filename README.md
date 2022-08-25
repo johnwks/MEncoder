@@ -123,8 +123,7 @@ You could have a variable in your code to modify the behavior of the encoder to 
 
 ```
 void loop()
-.
-.
+{
   uint8_t curr_pos;
   uint8_t mode = 0; // 0 - encoder, 1 - pulse, 2 - constant
   .
@@ -159,5 +158,8 @@ void loop()
       Joystick.setButton(BUTTON_NUM + encoder.position, 1);
     }
   }
+  .
+  .
+}
 
 ```
