@@ -97,7 +97,7 @@ void loop()
 
 ```
 
-In the example above, if a change in position is detected within the ```loop()``` function, it will trigger ```BUTTON_NUM+position``` to be pressed. Button states should be cleared everytime right after ```encoder.process()``` to ensure the button does not stay pressed too long (i.e. PULSE). Depending on how you wish to implement this, the button state can be set to NOT clear in order to have an always on state for that position (i.e. CONSTANT). Below is an example implementation using the PULSE method.
+In the example above, if a change in position is detected within the ```loop()``` function, it will trigger ```BUTTON_NUM+position``` to be pressed. Button states should be cleared everytime right after ```encoder.process()``` to ensure the button does not stay pressed too long (i.e. PULSE). Depending on how you wish to implement this, the button state can be set to NOT clear in order to have an always on state for that position (i.e. CONSTANT). Below is an example implementation using the CONSTANT method.
 
 ```
 void loop()
